@@ -16,3 +16,10 @@ CMD ["/usr/sbin/sshd", "-D"]
 
 RUN echo "root:root" | chpasswd
 RUN useradd -ms /bin/bash hadoop
+
+USER hadoop
+WORKDIR /home/hadoop
+
+RUN wget http://apache.mindstudios.com/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz
+RUN tar -xzf hadoop-3.1.0.tar.gz
+#RUN mv hadoop-3.1.0 hadoop
