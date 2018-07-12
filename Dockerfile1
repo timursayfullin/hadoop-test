@@ -15,15 +15,11 @@ EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 
 RUN echo "root:root" | chpasswd
+RUN useradd -ms /bin/bash hadoop
 
-ARG ssh_pub_key
-
-RUN mkdir -p /root/.ssh && \
-    chmod 0700 /root/.ssh
-
-RUN echo "$ssh_pub_key" > /root/.ssh/authorized_keys && \
-    chmod 600 /root/.ssh/authorized_keys
+USER hadoop
+WORKDIR /home/hadoop
 
 RUN wget http://apache.mindstudios.com/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz
 RUN tar -xzf hadoop-3.1.0.tar.gz
-RUN mv hadoop-3.1.0 hadoop
+#RUN mv hadoop-3.1.0 hadoop
