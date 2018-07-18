@@ -35,13 +35,4 @@ RUN mkdir -p /home/hadoop/.ssh && \
 RUN echo "$ssh_pub_key" > /home/hadoop/.ssh/authorized_keys && \
     chmod 600 /home/hadoop/.ssh/authorized_keys
 
-WORKDIR "/home/hadoop"
-
-RUN wget http://apache.mindstudios.com/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz
-RUN tar -xzf hadoop-3.1.0.tar.gz
-RUN mv hadoop-3.1.0 hadoop
-
 RUN chown -R hadoop /home/hadoop/
-
-RUN PATH=/home/hadoop/hadoop/bin:/home/hadoop/hadoop/sbin:$PATH
-
