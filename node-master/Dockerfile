@@ -3,9 +3,13 @@ FROM ubuntu:16.04
 RUN apt-get update && \
       apt-get -y install sudo
 
-RUN apt-get update && apt-get install -y openssh-server && apt-get install -y supervisor
+RUN apt-get update && \
+    apt-get install -y openssh-server && \
+    apt-get install -y supervisor && \
+    apt-get install -y default-jdk
+
 RUN mkdir /var/run/sshd
-RUN echo 'root:screencast' | chpasswd
+RUN echo 'root:root' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
@@ -14,13 +18,10 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-RUN echo "root:root" | chpasswd
-
 ARG ssh_pub_key
 
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh
-
 RUN echo "$ssh_pub_key" > /root/.ssh/authorized_keys && \
     chmod 600 /root/.ssh/authorized_keys
 
@@ -31,7 +32,6 @@ RUN useradd -m hadoop && echo "hadoop:hadoop" | chpasswd && adduser hadoop sudo
 
 RUN mkdir -p /home/hadoop/.ssh && \
     chmod 0700 /home/hadoop/.ssh
-
 RUN echo "$ssh_pub_key" > /home/hadoop/.ssh/authorized_keys && \
     chmod 600 /home/hadoop/.ssh/authorized_keys
 
@@ -41,7 +41,9 @@ RUN wget http://apache.mindstudios.com/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.t
 RUN tar -xzf hadoop-3.1.0.tar.gz
 RUN mv hadoop-3.1.0 hadoop
 
+COPY node-master/configs/* /home/hadoop/hadoop/etc/hadoop/
+
 RUN chown -R hadoop /home/hadoop/
 
-RUN PATH=/home/hadoop/hadoop/bin:/home/hadoop/hadoop/sbin:$PATH
-
+RUN export PATH=/home/hadoop/hadoop/bin:/home/hadoop/hadoop/sbin:$PATH
+RUN export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
