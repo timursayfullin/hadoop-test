@@ -43,7 +43,13 @@ RUN mv hadoop-3.1.0 hadoop
 
 COPY node-master/configs/* /home/hadoop/hadoop/etc/hadoop/
 
-RUN chown -R hadoop /home/hadoop/
+#RUN chown -R hadoop /home/hadoop/
 
-RUN export PATH=/home/hadoop/hadoop/bin:/home/hadoop/hadoop/sbin:$PATH
-RUN export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+ENV PATH "/home/hadoop/hadoop/bin:/home/hadoop/hadoop/sbin:$PATH"
+ENV JAVA_HOME "/usr/lib/jvm/java-8-openjdk-amd64/jre"
+
+#USER hadoop
+#WORKDIR "/home/hadoop"
+#
+#RUN hdfs namenode -format
+#CMD ["start-dfs.sh"]
